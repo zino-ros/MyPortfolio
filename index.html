@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portolio | Mechatronics into AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            accent: '#38bdf8', // Sky blue for logic
+                            mech: '#f59e0b',   // Amber for engineering/sparks
+                            purple: '#8b5cf6'  // Purple for AI/Neural
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Canvas positioning */
+        #neural-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-accent selection:text-brand-dark">
+
+    <!-- Interactive Background -->
+    <canvas id="neural-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 font-bold text-2xl tracking-tighter text-white">
+                    HYBRID<span class="text-brand-accent">.DEV</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="hover:text-brand-accent px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="#about" class="hover:text-brand-accent px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
+                        <a href="#skills" class="hover:text-brand-accent px-3 py-2 rounded-md text-sm font-medium transition-colors">Skills</a>
+                        <a href="#projects" class="hover:text-brand-accent px-3 py-2 rounded-md text-sm font-medium transition-colors">Projects</a>
+                        <a href="#contact" class="bg-brand-accent text-brand-dark px-4 py-2 rounded-full text-sm font-bold hover:bg-white transition-all transform hover:scale-105">Contact Me</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="toggleMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none">
+                        <i data-lucide="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-brand-dark/95 backdrop-blur-md" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-700">
+                <a href="#home" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-brand-accent">Home</a>
+                <a href="#about" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-accent">About</a>
+                <a href="#skills" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-accent">Skills</a>
+                <a href="#projects" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-brand-accent">Projects</a>
+                <a href="#contact" onclick="toggleMenu()" class="block px-3 py-2 rounded-md text-base font-medium text-brand-accent">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative px-4 pt-16">
+        <div class="max-w-5xl mx-auto text-center z-10">
+            <div class="inline-flex items-center px-4 py-2 rounded-full border border-brand-accent/30 bg-brand-accent/10 text-brand-accent text-sm font-medium mb-6 animate-float">
+                <i data-lucide="cpu" class="w-4 h-4 mr-2"></i>
+                From Hardware to Neural Networks
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight">
+                설계하던 <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-mech to-orange-400">손</span>으로<br>
+                미래의 <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-brand-purple">지능</span>을 만듭니다.
+            </h1>
+            <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+                메카트로닉스 공학의 물리적 이해도와 인공지능의 논리적 사고를 결합하여,<br class="hidden md:block">
+                현실 세계의 문제를 데이터로 해결하는 AI 엔지니어가 되겠습니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#projects" class="px-8 py-4 bg-gradient-to-r from-brand-accent to-blue-600 text-white font-bold rounded-lg shadow-lg hover:shadow-brand-accent/50 transition-all hover:-translate-y-1 flex items-center justify-center">
+                    포트폴리오 보기 <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+                </a>
+                <a href="#about" class="px-8 py-4 glass-card text-white font-bold rounded-lg hover:bg-white/10 transition-all flex items-center justify-center">
+                    더 알아보기
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll Down Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-gray-500">
+            <i data-lucide="chevrons-down" class="w-8 h-8"></i>
+        </div>
+    </section>
+
+    <!-- About Section: The Bridge -->
+    <section id="about" class="py-24 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <!-- Left: Illustration/Concept -->
+                <div class="relative reveal">
+                    <div class="aspect-square rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 p-8 relative flex items-center justify-center overflow-hidden group">
+                        <!-- Connecting Line Animation -->
+                        <div class="absolute w-full h-1 bg-gradient-to-r from-brand-mech via-white to-brand-accent opacity-20 top-1/2 left-0 transform -translate-y-1/2"></div>
+                        
+                        <!-- Left Icon: Mech -->
+                        <div class="absolute left-10 md:left-16 p-6 rounded-full bg-brand-mech/10 border border-brand-mech/50 text-brand-mech transition-transform group-hover:scale-110 duration-500 z-10">
+                            <i data-lucide="settings" class="w-12 h-12 animate-[spin_10s_linear_infinite]"></i>
+                        </div>
+
+                        <!-- Right Icon: AI -->
+                        <div class="absolute right-10 md:right-16 p-6 rounded-full bg-brand-accent/10 border border-brand-accent/50 text-brand-accent transition-transform group-hover:scale-110 duration-500 z-10">
+                            <i data-lucide="brain-circuit" class="w-12 h-12"></i>
+                        </div>
+                        
+                        <!-- Center: Code -->
+                        <div class="absolute bg-black/80 backdrop-blur border border-gray-600 rounded px-4 py-2 font-mono text-xs text-green-400 shadow-2xl z-20">
+                            &lt;Transformation /&gt;
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Text Content -->
+                <div class="reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                        기계의 언어를 이해하는<br>
+                        <span class="text-brand-accent">AI 개발자</span>
+                    </h2>
+                    <div class="space-y-6 text-gray-300 leading-relaxed">
+                        <p>
+                            저는 <strong>메카트로닉스 공학</strong>을 전공하며 기구 설계와 시스템 제어 분야에서 경험을 쌓았습니다. 물리적인 기계가 어떻게 움직이고 작동하는지, 그 근본적인 메커니즘을 누구보다 잘 이해하고 있습니다.
+                        </p>
+                        <p>
+                            설계 업무를 수행하며 "어떻게 하면 이 시스템을 더 효율적으로, 더 지능적으로 만들 수 있을까?"라는 고민을 하게 되었습니다. 그 해답은 단순한 기구학적 개선이 아닌, <strong>데이터와 인공지능</strong>에 있었습니다.
+                        </p>
+                        <p class="border-l-4 border-brand-purple pl-4 italic text-gray-400">
+                            "하드웨어라는 '몸체'에 최적화된 AI라는 '두뇌'를 심는 것. 그것이 제가 추구하는 엔지니어링의 미래입니다."
+                        </p>
+                        <p>
+                            이제 저는 도면 대신 코드를 작성하며, 제조 공정의 효율화부터 자율 시스템의 판단 로직까지, 물리 세계와 디지털 세계를 잇는 다리가 되고자 합니다.
+                        </p>
+                    </div>
+                    
+                    <!-- Key Stats/Traits -->
+                    <div class="grid grid-cols-2 gap-4 mt-8">
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <h3 class="font-bold text-brand-mech mb-1">Domain Knowledge</h3>
+                            <p class="text-sm text-gray-400">제조, 로보틱스, 기구학에 대한 깊은 이해</p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <h3 class="font-bold text-brand-accent mb-1">Data-Driven</h3>
+                            <p class="text-sm text-gray-400">문제 해결을 위한 수학적 사고와 모델링</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-24 bg-black/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Skill Transition</h2>
+                <p class="text-gray-400">기존의 엔지니어링 역량 위에 AI 기술 스택을 쌓아올렸습니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Engineering Base -->
+                <div class="glass-card p-8 rounded-2xl reveal">
+                    <div class="flex items-center mb-6">
+                        <div class="p-3 bg-brand-mech/20 rounded-lg text-brand-mech mr-4">
+                            <i data-lucide="wrench" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Engineering Base</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">CAD / 3D Modeling (Catia, Solidworks)</span>
+                                <span class="text-gray-400">Expert</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-brand-mech h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Mechanism Analysis</span>
+                                <span class="text-gray-400">Advanced</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-brand-mech h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">PLC / Embedded C</span>
+                                <span class="text-gray-400">Intermediate</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-brand-mech h-2 rounded-full" style="width: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Stack -->
+                <div class="glass-card p-8 rounded-2xl border-brand-accent/30 reveal" style="box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);">
+                    <div class="flex items-center mb-6">
+                        <div class="p-3 bg-brand-accent/20 rounded-lg text-brand-accent mr-4">
+                            <i data-lucide="code-2" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">AI & Software</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Python & Data Analysis</span>
+                                <span class="text-gray-400">Advanced</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-brand-accent h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Deep Learning (PyTorch/Tensorflow)</span>
+                                <span class="text-gray-400">Advanced</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-brand-accent h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Computer Vision (OpenCV)</span>
+                                <span class="text-gray-400">Focusing</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-brand-accent to-brand-purple h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tech Badges -->
+            <div class="mt-12 flex flex-wrap justify-center gap-3 reveal">
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-accent transition-colors">Python</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-accent transition-colors">PyTorch</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-accent transition-colors">Scikit-learn</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-accent transition-colors">OpenCV</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-accent transition-colors">Docker</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-accent transition-colors">Git</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-mech transition-colors">AutoCAD</span>
+                <span class="px-4 py-2 bg-gray-800 rounded-full text-sm border border-gray-700 hover:border-brand-mech transition-colors">MATLAB</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
+                <p class="text-gray-400">메카트로닉스 도메인 지식과 AI 기술을 결합한 프로젝트입니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Project 1: Manufacturing AI -->
+                <div class="glass-card rounded-xl overflow-hidden hover:transform hover:-translate-y-2 transition-all duration-300 group reveal">
+                    <div class="h-48 bg-gradient-to-br from-gray-700 to-gray-800 relative flex items-center justify-center overflow-hidden">
+                        <i data-lucide="scan-line" class="w-16 h-16 text-brand-accent opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
+                        <div class="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors"></div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-brand-purple uppercase tracking-wider">Computer Vision</span>
+                            <div class="flex gap-2">
+                                <i data-lucide="github" class="w-4 h-4 text-gray-400 hover:text-white cursor-pointer"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-brand-accent transition-colors">PCB 결함 자동 탐지 시스템</h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-3">
+                            기존 육안 검사의 한계를 극복하기 위해 CNN 기반의 딥러닝 모델을 활용하여 PCB 표면의 미세 크랙과 납땜 불량을 실시간으로 탐지하는 솔루션을 개발했습니다.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-brand-accent/10 text-brand-accent px-2 py-1 rounded">YOLOv8</span>
+                            <span class="text-xs bg-brand-accent/10 text-brand-accent px-2 py-1 rounded">PyTorch</span>
+                            <span class="text-xs bg-brand-accent/10 text-brand-accent px-2 py-1 rounded">OpenCV</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Predictive Maintenance -->
+                <div class="glass-card rounded-xl overflow-hidden hover:transform hover:-translate-y-2 transition-all duration-300 group reveal">
+                    <div class="h-48 bg-gradient-to-br from-gray-700 to-gray-800 relative flex items-center justify-center overflow-hidden">
+                        <i data-lucide="activity" class="w-16 h-16 text-brand-mech opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-brand-mech uppercase tracking-wider">Time Series Analysis</span>
+                            <div class="flex gap-2">
+                                <i data-lucide="github" class="w-4 h-4 text-gray-400 hover:text-white cursor-pointer"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-brand-mech transition-colors">모터 설비 예지 보전 AI</h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-3">
+                            산업용 모터의 진동 및 전류 데이터를 수집하여 LSTM 모델을 통해 고장 징후를 사전에 예측하고 잔여 수명(RUL)을 계산하는 알고리즘을 구현했습니다.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-brand-mech/10 text-brand-mech px-2 py-1 rounded">LSTM</span>
+                            <span class="text-xs bg-brand-mech/10 text-brand-mech px-2 py-1 rounded">Pandas</span>
+                            <span class="text-xs bg-brand-mech/10 text-brand-mech px-2 py-1 rounded">Signal Processing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Robot Path Planning -->
+                <div class="glass-card rounded-xl overflow-hidden hover:transform hover:-translate-y-2 transition-all duration-300 group reveal">
+                    <div class="h-48 bg-gradient-to-br from-gray-700 to-gray-800 relative flex items-center justify-center overflow-hidden">
+                        <i data-lucide="bot" class="w-16 h-16 text-green-400 opacity-50 group-hover:scale-110 transition-transform duration-500"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Reinforcement Learning</span>
+                            <div class="flex gap-2">
+                                <i data-lucide="github" class="w-4 h-4 text-gray-400 hover:text-white cursor-pointer"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-green-400 transition-colors">로봇팔 최적 경로 생성 강화학습</h3>
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-3">
+                            복잡한 작업 환경에서 로봇팔이 장애물을 회피하며 목표 지점에 도달하는 최적 경로를 학습시키기 위해 PPO 알고리즘을 적용한 시뮬레이션 프로젝트입니다.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded">RL (PPO)</span>
+                            <span class="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded">Gymnasium</span>
+                            <span class="text-xs bg-green-500/10 text-green-400 px-2 py-1 rounded">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+            <h2 class="text-3xl md:text-4xl font-bold mb-8">Let's Connect</h2>
+            <p class="text-xl text-gray-300 mb-12">
+                설계의 정교함과 AI의 혁신성을 겸비한 엔지니어를 찾고 계신가요?<br>
+                언제든 연락주시면 커피 한 잔과 함께 이야기 나누고 싶습니다.
+            </p>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <a href="mailto:your.email@example.com" class="flex items-center justify-center px-8 py-4 bg-brand-accent/10 border border-brand-accent text-brand-accent rounded-lg hover:bg-brand-accent hover:text-brand-dark transition-all group">
+                    <i data-lucide="mail" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    your.email@example.com
+                </a>
+                <a href="https://github.com" target="_blank" class="flex items-center justify-center px-8 py-4 bg-gray-800 border border-gray-700 text-white rounded-lg hover:bg-gray-700 transition-all group">
+                    <i data-lucide="github" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    GitHub Profile
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="flex items-center justify-center px-8 py-4 bg-[#0077b5]/20 border border-[#0077b5] text-[#0077b5] rounded-lg hover:bg-[#0077b5] hover:text-white transition-all group">
+                    <i data-lucide="linkedin" class="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"></i>
+                    LinkedIn
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+        <p>&copy; 2024 Your Name. Bridging Hardware & AI.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-brand-dark/90', 'backdrop-blur-md', 'shadow-lg');
+            } else {
+                navbar.classList.remove('bg-brand-dark/90', 'backdrop-blur-md', 'shadow-lg');
+            }
+        });
+
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 150;
+
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        // Trigger once on load
+        revealOnScroll();
+
+
+        // --- Canvas Particle Animation (Neural Network Effect) ---
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        // Responsive config
+        const getParticleCount = () => window.innerWidth < 768 ? 40 : 80;
+        const connectionDistance = 150;
+        
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1; // Velocity X
+                this.vy = (Math.random() - 0.5) * 1; // Velocity Y
+                this.size = Math.random() * 2 + 1;
+                // Randomly assign colors: Blue(AI) or Orange(Mech)
+                this.color = Math.random() > 0.5 ? '#38bdf8' : '#f59e0b';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = getParticleCount();
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Update and draw particles
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // Draw connections
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(100, 116, 139, ${1 - distance / connectionDistance})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Mouse interaction (simple repulsion)
+            // Note: Keep it simple for performance
+            
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+
+    </script>
+</body>
+</html>
